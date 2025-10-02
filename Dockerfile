@@ -11,7 +11,7 @@ COPY moneymanager/src ./src
 RUN mvn clean package -DskipTests
 
 # ---- Stage 2: Runtime ----
-FROM eclipse-temurin:21.0.8_7-jre
+FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
