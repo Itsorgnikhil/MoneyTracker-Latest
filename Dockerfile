@@ -3,18 +3,15 @@ FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
-
+# Copy pom.xml and src from the subfolder
+COPY moneymanager/pom.xml .
 RUN mvn dependency:go-offline -B
 
-COPY src src
-
+COPY moneymanager/src ./src
 RUN mvn clean package -DskipTests
 
 # ---- Stage 2: Runtime ----
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:21.0.8_7-jre
 
 WORKDIR /app
 
