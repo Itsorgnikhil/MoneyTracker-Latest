@@ -22,7 +22,6 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
-    private final JwtUtil jwtUtil;
 
     public ProfileDTO registerProfile(ProfileDTO profileDTO){
         ProfileEntity newProfile = toEntity(profileDTO);
@@ -30,7 +29,7 @@ public class ProfileService {
         // Encode password
         newProfile.setPassword(passwordEncoder.encode(profileDTO.getPassword()));
 
-        // Immediately mark as active
+        // Account active by default since no email activation
         newProfile.setIsActive(true);
 
         newProfile = profileRepository.save(newProfile);
@@ -47,7 +46,7 @@ public class ProfileService {
                 .profileImageUrl(profileDTO.getProfileImageUrl())
                 .createdAt(profileDTO.getCreatedAt())
                 .updatedAt(profileDTO.getUpdatedAt())
-                .isActive(true) // mark active by default
+                .isActive(profileDTO.getIsActive() != null ? profileDTO.getIsActive() : true)
                 .build();
     }
 
@@ -62,6 +61,29 @@ public class ProfileService {
                 .build();
     }
 
+    public boolean isAccountActive(String email){
+        return profileRepository.findByEmail(email)
+                .map(ProfileEntity::getIsActive)
+                .orElse(false);
+    }
+
+    // Login method without JWT
+    public Map<String, Object> login(AuthDTO authDTO) {
+        authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        authDTO.getEmail(),
+                        authDTO.getPassword()
+                )
+        );
+
+        ProfileDTO user = profileRepository.findByEmail(authDTO.getEmail())
+                .map(this::toDTO)
+                .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + authDTO.getEmail()));
+
+        return Map.of("user", user);
+    }
+
+    // Get currently authenticated user's profile
     public ProfileEntity getCurrentProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return profileRepository.findByEmail(authentication.getName())
@@ -70,6 +92,7 @@ public class ProfileService {
                 ));
     }
 
+    // Get public profile by email or current user
     public ProfileDTO getPublicProfile(String email) {
         ProfileEntity currentUser;
 
@@ -80,37 +103,6 @@ public class ProfileService {
                     .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + email));
         }
 
-        return ProfileDTO.builder()
-                .id(currentUser.getId())
-                .fullName(currentUser.getFullName())
-                .email(currentUser.getEmail())
-                .profileImageUrl(currentUser.getProfileImageUrl())
-                .createdAt(currentUser.getCreatedAt())
-                .updatedAt(currentUser.getUpdatedAt())
-                .build();
-    }
-
-    public Map<String, Object> authenticateAndGenerateToken(AuthDTO authDTO) {
-        try {
-            // Authenticate the user
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authDTO.getEmail(),
-                            authDTO.getPassword()
-                    )
-            );
-
-            // Generate JWT token
-            String token = jwtUtil.generateToken(authDTO.getEmail());
-
-            // Prepare response map
-            return Map.of(
-                    "token", token,
-                    "user", getPublicProfile(authDTO.getEmail())
-            );
-
-        } catch (Exception e) {
-            throw new RuntimeException("Invalid email or password");
-        }
+        return toDTO(currentUser);
     }
 }
