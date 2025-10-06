@@ -10,31 +10,44 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+import static org.springframework.web.servlet.function.ServerResponse.status;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1.0") // Optional base path
 public class ProfileController {
 
     private final ProfileService profileService;
 
-    @PostMapping("/register")
-    public ResponseEntity<ProfileDTO> registerProfile(@RequestBody ProfileDTO profileDTO){
-        ProfileDTO registeredProfile = profileService.registerProfile(profileDTO);
+    @PostMapping("/register")//handler method
+     public ResponseEntity<ProfileDTO> registerProfile(@RequestBody ProfileDTO profileDTO){
+         ProfileDTO registeredProfile = profileService.registerProfile(profileDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(registeredProfile);
-    }
 
+     }
+@GetMapping("/activate")
+    public ResponseEntity<String> antivoteProfile(@RequestParam String token) {
+        boolean isActivated = profileService.activateProfile(token);
+
+        if (isActivated) {
+            return ResponseEntity.ok("Profile activated successfully");
+        } else {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body("Activation token not found or already used");
+        }
+    }
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthDTO authDTO) {
         try {
-            // Check if account is active (should be true by default now)
+            // Check if the account is active
             if (!profileService.isAccountActive(authDTO.getEmail())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
-                        "message", "Account is not active."
+                        "message", "Account is not active. Please activate your account first."
                 ));
             }
 
-            // Authenticate and get user info
-            Map<String, Object> response = profileService.login(authDTO);
+            // Authenticate user and generate token
+            Map<String, Object> response = profileService.authenticateAndGenerateToken(authDTO);
             return ResponseEntity.ok(response);
 
         } catch (Exception e) {
@@ -42,12 +55,8 @@ public class ProfileController {
                     "message", e.getMessage()
             ));
         }
+
     }
 
-    // Get public profile
-    @GetMapping("/profile")
-    public ResponseEntity<ProfileDTO> getProfile(@RequestParam(required = false) String email){
-        ProfileDTO profileDTO = profileService.getPublicProfile(email);
-        return ResponseEntity.ok(profileDTO);
-    }
+
 }
