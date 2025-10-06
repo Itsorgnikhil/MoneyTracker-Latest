@@ -12,6 +12,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1.0") // Optional base path
 public class ProfileController {
 
     private final ProfileService profileService;
@@ -25,12 +26,28 @@ public class ProfileController {
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody AuthDTO authDTO) {
         try {
-            Map<String, Object> response = profileService.authenticateAndGenerateToken(authDTO);
+            // Check if account is active (should be true by default now)
+            if (!profileService.isAccountActive(authDTO.getEmail())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(
+                        "message", "Account is not active."
+                ));
+            }
+
+            // Authenticate and get user info
+            Map<String, Object> response = profileService.login(authDTO);
             return ResponseEntity.ok(response);
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                     "message", e.getMessage()
             ));
         }
+    }
+
+    // Get public profile
+    @GetMapping("/profile")
+    public ResponseEntity<ProfileDTO> getProfile(@RequestParam(required = false) String email){
+        ProfileDTO profileDTO = profileService.getPublicProfile(email);
+        return ResponseEntity.ok(profileDTO);
     }
 }
