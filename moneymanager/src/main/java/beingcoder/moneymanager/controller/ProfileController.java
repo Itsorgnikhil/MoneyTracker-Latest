@@ -25,7 +25,7 @@ public class ProfileController {
 
      }
 @GetMapping("/activate")
-    public ResponseEntity<String> antivoteProfile(@RequestParam String token) {
+    public ResponseEntity<String> activateProfile(@RequestParam String token) {
         boolean isActivated = profileService.activateProfile(token);
 
         if (isActivated) {
