@@ -2,7 +2,6 @@ package beingcoder.moneymanager.service;
 
 import beingcoder.moneymanager.dto.AuthDTO;
 import beingcoder.moneymanager.dto.ProfileDTO;
-
 import beingcoder.moneymanager.entity.ProfileEntity;
 import beingcoder.moneymanager.repository.ProfileRepository;
 import beingcoder.moneymanager.util.JwtUtil;
@@ -23,26 +22,26 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProfileService {
 
-    private  final ProfileRepository profileRepository;
+    private final ProfileRepository profileRepository;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
- @Value("${app.activation.url}")
+    @Value("${app.activation.url}")
     private String activationURL;
 
-    public ProfileDTO registerProfile(ProfileDTO profileDTO){
+    public ProfileDTO registerProfile(ProfileDTO profileDTO) {
         ProfileEntity newProfile = toEntity(profileDTO);
 
-        // 🔹 Encode password here
+        // Encode password
         newProfile.setPassword(passwordEncoder.encode(profileDTO.getPassword()));
-
         newProfile.setActivationToken(UUID.randomUUID().toString());
+
         newProfile = profileRepository.save(newProfile);
 
-        // send activation email
-        String activationLink = activationURL+"/api/v1.0/activate?token=" + newProfile.getActivationToken();
+        // Send activation email
+        String activationLink = activationURL + "/api/v1.0/activate?token=" + newProfile.getActivationToken();
         String subject = "Activate your Money Manager account";
         String body = "Click on the following link to activate your account: " + activationLink;
         emailService.sendEmail(newProfile.getEmail(), subject, body);
@@ -60,7 +59,8 @@ public class ProfileService {
                 .createdAt(profileDTO.getCreatedAt())
                 .updatedAt(profileDTO.getUpdatedAt())
                 .build();
-}
+    }
+
     public ProfileDTO toDTO(ProfileEntity profileEntity) {
         return ProfileDTO.builder()
                 .id(profileEntity.getId())
@@ -72,7 +72,6 @@ public class ProfileService {
                 .build();
     }
 
-
     public boolean activateProfile(String activationToken) {
         return profileRepository.findByActivationToken(activationToken)
                 .map(profile -> {
@@ -82,52 +81,44 @@ public class ProfileService {
                 })
                 .orElse(false);
     }
-      public boolean isAccountActive(String email){
+
+    public boolean isAccountActive(String email) {
         return profileRepository.findByEmail(email)
                 .map(ProfileEntity::getIsActive)
                 .orElse(false);
-      }
+    }
 
+    public ProfileEntity getCurrentProfile() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return profileRepository.findByEmail(authentication.getName())
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "Profile not found with email: " + authentication.getName()
+                ));
+    }
 
-
-        // Get the currently authenticated user's profile
-        public ProfileEntity getCurrentProfile() {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            return profileRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException(
-                            "Profile not found with email: " + authentication.getName()
-                    ));
+    public ProfileDTO getPublicProfile(String email) {
+        ProfileEntity currentUser;
+        if (email == null) {
+            currentUser = getCurrentProfile();
+        } else {
+            currentUser = profileRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + email));
         }
-
-        // Get a public profile DTO by email, or current user if email is null
-        public ProfileDTO getPublicProfile(String email) {
-            ProfileEntity currentUser;
-
-            if (email == null) {
-                currentUser = getCurrentProfile();
-            } else {
-                currentUser = profileRepository.findByEmail(email)
-                        .orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: " + email));
-            }
-
-            return ProfileDTO.builder()
-                    .id(currentUser.getId())
-                    .fullName(currentUser.getFullName())
-                    .email(currentUser.getEmail())
-                    .profileImageUrl(currentUser.getProfileImageUrl())
-                    .createdAt(currentUser.getCreatedAt())
-                    .updatedAt(currentUser.getUpdatedAt())
-                    .build();
-        }
+        return ProfileDTO.builder()
+                .id(currentUser.getId())
+                .fullName(currentUser.getFullName())
+                .email(currentUser.getEmail())
+                .profileImageUrl(currentUser.getProfileImageUrl())
+                .createdAt(currentUser.getCreatedAt())
+                .updatedAt(currentUser.getUpdatedAt())
+                .build();
+    }
 
     public Map<String, Object> authenticateAndGenerateToken(AuthDTO authDTO) {
         try {
             // Authenticate the user
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authDTO.getEmail(),
-                            authDTO.getPassword()
-                    )
+                    new UsernamePasswordAuthenticationToken(authDTO.getEmail(), authDTO.getPassword())
             );
 
             // Generate JWT token
@@ -138,14 +129,8 @@ public class ProfileService {
                     "token", token,
                     "user", getPublicProfile(authDTO.getEmail())
             );
-
         } catch (Exception e) {
             throw new RuntimeException("Invalid email or password");
         }
     }
-
 }
-
-
-
-
