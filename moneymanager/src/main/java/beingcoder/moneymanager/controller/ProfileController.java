@@ -24,13 +24,8 @@ public class ProfileController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registeredProfile);
     }
 
-<<<<<<< HEAD
     // Activation - public endpoint
     @GetMapping("/activate")
-=======
-     }
-@GetMapping("/activate")
->>>>>>> 467b2bd8c879f63c083ca113a86c6eea39c3928d
     public ResponseEntity<String> activateProfile(@RequestParam String token) {
         boolean isActivated = profileService.activateProfile(token);
         if (isActivated) {
