@@ -105,7 +105,7 @@ public List<ExpenseDTO> FilterExpenses(LocalDate startDate, LocalDate endDate, S
 }
 // notifications
 public List<ExpenseDTO> getExpensesForUserOnDate(Long profileId, LocalDate date) {
-    List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId, date);
+    List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate (profileId, date);
     return list.stream().map(this::toDTO).toList();
 }
 

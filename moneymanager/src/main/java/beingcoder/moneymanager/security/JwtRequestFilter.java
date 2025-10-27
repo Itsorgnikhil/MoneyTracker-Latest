@@ -1,4 +1,5 @@
 package beingcoder.moneymanager.security;
+
 import beingcoder.moneymanager.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;  // ✅ fixed type name
+    private final UserDetailsService userDetailsService;
     private final JwtUtil jwtUtil;
 
     @Override
@@ -27,12 +28,24 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        String path = request.getRequestURI();
+
+        // Skip JWT check for public endpoints (context path already included)
+        if (path.endsWith("/register") ||
+                path.endsWith("/login") ||
+                path.endsWith("/activate") ||
+                path.endsWith("/status") ||
+                path.endsWith("/health")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader("Authorization");
         String email = null;
         String jwt = null;
 
-        if (authHeader != null && authHeader.startsWith("Bearer")) {
-            jwt = authHeader.substring(7);  // ✅ no "beginindex"
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7);
             email = jwtUtil.extractUsername(jwt);
         }
 
@@ -43,16 +56,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(
                                 userDetails,
-                                null,  // ✅ credentials set to null
+                                null,
                                 userDetails.getAuthorities()
                         );
-
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
 
-        filterChain.doFilter(request, response); // ✅ correct parameter
-    }
-}
+        filterChain.doFilter(request, response);
+    }}
