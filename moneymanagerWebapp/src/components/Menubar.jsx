@@ -3,7 +3,7 @@ import { AppContext } from "../context/AppContext";
 import { useNavigate } from "react-router-dom";
 import { LogOut, Menu, User, X } from "lucide-react";
 import { assets } from "../assets/assets.js";
-import Sidebar from "./Sidebar.jsx"; // ✅ You need this import for mobile sidebar
+import Sidebar from "./Sidebar.jsx";
 
 const Menubar = ({ activeMenu }) => {
   const [openSidemenu, setOpenSideMenu] = useState(false);
@@ -12,12 +12,12 @@ const Menubar = ({ activeMenu }) => {
   const { user, clearUser } = useContext(AppContext);
   const navigate = useNavigate();
 
-  // ✅ Handle logout
+  // ✅ Handle logout - Redirect to landing page
   const handleLogout = () => {
     localStorage.removeItem("token");
     clearUser();
     setShowDropdown(false);
-    navigate("/login");
+    navigate("/", { replace: true }); // Changed from "/login" to "/"
   };
 
   // ✅ Handle click outside dropdown

@@ -5,7 +5,7 @@ import axiosConfig from "../util/axiosConfig.jsx";
 import { API_ENDPOINTS } from "../util/apiEndpoints";
 import moment from "moment";
 import { toast } from "react-hot-toast";
-import TransactionInfoCard from "../components/TransactionInfoCard"; // Make sure this import exists
+import TransactionInfoCard from "../components/TransactioninfoCard.jsx"; // Make sure this import exists
 
 const Filter = () => {
   const [type, setType] = useState("income");

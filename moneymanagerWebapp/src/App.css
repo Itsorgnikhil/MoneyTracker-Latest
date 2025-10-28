@@ -1,3 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import "tailwindcss";
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: #fafafa;
+}
+
 /* Custom card styles */
 .card {
   background-color: white;
@@ -38,4 +46,11 @@
 
 .text-primary {
   color: #9333ea;
+}
+
+/* Allow scrolling for landing page wrapper */
+.landing-page-wrapper {
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
 }

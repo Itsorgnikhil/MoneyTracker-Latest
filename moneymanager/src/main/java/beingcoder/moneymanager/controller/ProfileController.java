@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("")  // ensure context path consistency
+@RequestMapping("")
 @RequiredArgsConstructor
 public class ProfileController {
 
@@ -58,10 +58,26 @@ public class ProfileController {
         }
     }
 
+    // Get Profile - protected endpoint
     @GetMapping("/profile")
     public ResponseEntity<ProfileDTO> getPublicProfile() {
         ProfileDTO profileDTO = profileService.getPublicProfile(null);
         return ResponseEntity.ok(profileDTO);
     }
 
+    // Update Profile - protected endpoint
+    @PutMapping("/profile")
+    public ResponseEntity<Map<String, Object>> updateProfile(@RequestBody ProfileDTO profileDTO) {
+        try {
+            ProfileDTO updatedProfile = profileService.updateProfile(profileDTO);
+            return ResponseEntity.ok(Map.of(
+                    "message", "Profile updated successfully",
+                    "user", updatedProfile
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
+                    "message", e.getMessage()
+            ));
+        }
+    }
 }

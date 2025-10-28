@@ -133,4 +133,24 @@ public class ProfileService {
             throw new RuntimeException("Invalid email or password");
         }
     }
+
+    // NEW METHOD: Update Profile
+    public ProfileDTO updateProfile(ProfileDTO profileDTO) {
+        // Get current logged-in user
+        ProfileEntity currentProfile = getCurrentProfile();
+
+        // Update only the fields that are provided
+        if (profileDTO.getFullName() != null && !profileDTO.getFullName().isEmpty()) {
+            currentProfile.setFullName(profileDTO.getFullName());
+        }
+
+        if (profileDTO.getProfileImageUrl() != null && !profileDTO.getProfileImageUrl().isEmpty()) {
+            currentProfile.setProfileImageUrl(profileDTO.getProfileImageUrl());
+        }
+
+        // Save updated profile
+        ProfileEntity updatedProfile = profileRepository.save(currentProfile);
+
+        return toDTO(updatedProfile);
+    }
 }
