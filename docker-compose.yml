@@ -1,0 +1,39 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: moneymanager-db
+    environment:
+      MYSQL_DATABASE: moneymanager
+      MYSQL_ROOT_PASSWORD: "123456789"
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: moneymanager-api
+    ports:
+      - "9090:9090"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/moneymanager?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "123456789"
+      SMTP_USERNAME: nikhilkmt1138@gmail.com
+      SMTP_PASSWORD: tbohztiptrhacmwc
+      MONEY_MANAGER_FRONTEND_URL: http://localhost:5173
+      # Fallback back-end activation URL inside docker environment
+      APP_ACTIVATION_URL: http://localhost:9090
+
+volumes:
+  mysql_data:

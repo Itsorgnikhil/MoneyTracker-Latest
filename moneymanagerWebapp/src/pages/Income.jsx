@@ -10,12 +10,15 @@ import { toast } from "react-hot-toast";
 import AddIncomeForm from "../components/AddIncomeForm.jsx";
 import DeleteAlert from "../components/DeleteAlert.jsx";
 import IncomeOverview from "../components/IncomeOverview.jsx";
+import Loader from "../components/common/Loader";
+import SuccessOverlay from "../components/common/SuccessOverlay";
 
 const Income = () => {
   useUser();
   const [incomeData, setIncomeData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [openAddIncomeModal, setOpenAddIncomeModal] = useState(false);
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
     show: false,
@@ -99,11 +102,14 @@ const Income = () => {
         categoryId,
       });
 
-      if (response.status === 201) {
-        setOpenAddIncomeModal(false);
-        toast.success("Income added successfully");
-        fetchIncomeDetails();
-        fetchIncomeCategories();
+      if (response.status === 201 || response.status === 200) {
+        setShowSuccess(true);
+        setTimeout(() => {
+          setOpenAddIncomeModal(false);
+          setShowSuccess(false);
+          fetchIncomeDetails();
+          fetchIncomeCategories();
+        }, 1500);
       }
     } catch (error) {
       console.error("Error adding income:", error);
@@ -175,6 +181,7 @@ const handleEmailIncomeDetails = async () => {
 
   return (
     <Dashboard activeMenu="Income">
+      {loading && <Loader overlay={true} />}
       <div className="h-full overflow-y-auto">
         <div className="py-5 space-y-6">
           <div className="grid grid-cols-1 gap-6">
@@ -219,6 +226,7 @@ const handleEmailIncomeDetails = async () => {
           </div>
         </div>
       </div>
+      <SuccessOverlay visible={showSuccess} />
     </Dashboard>
   );
 };

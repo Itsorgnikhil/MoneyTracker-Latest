@@ -55,12 +55,12 @@ const Profile = () => {
 
   return (
     <Dashboard activeMenu="Profile">
-      <div className="max-w-2xl mx-auto my-8">
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2 text-center">
+      <div className="max-w-2xl mx-auto my-8 px-4">
+        <div className="card p-8 shadow-lg">
+          <h2 className="text-3xl font-bold text-slate-900 dark:text-slate-50 mb-2 text-center">
             Profile Settings
           </h2>
-          <p className="text-gray-600 text-center mb-8">
+          <p className="text-slate-500 dark:text-slate-400 text-center mb-8">
             Update your profile information
           </p>
 
@@ -72,20 +72,20 @@ const Profile = () => {
                   <img
                     src={user.profileImageUrl}
                     alt="Current profile"
-                    className="w-32 h-32 rounded-full object-cover border-4 border-purple-200 shadow-lg"
+                    className="w-32 h-32 rounded-full object-cover border-4 border-violet-200 dark:border-violet-900/30 shadow-lg"
                   />
                 ) : (
-                  <div className="w-32 h-32 rounded-full bg-purple-100 flex items-center justify-center border-4 border-purple-200 shadow-lg">
-                    <User className="text-purple-500" size={60} />
+                  <div className="w-32 h-32 rounded-full bg-violet-50 dark:bg-violet-950/20 flex items-center justify-center border-4 border-violet-200 dark:border-violet-900/30 shadow-lg">
+                    <User className="text-violet-500 dark:text-violet-400" size={60} />
                   </div>
                 )}
               </div>
-              <p className="text-sm text-gray-600 font-medium">Current Photo</p>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">Current Photo</p>
             </div>
 
             {/* New Profile Photo Selector */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3 text-center">
                 Upload New Profile Photo
               </label>
               <ProfilePhotoSelector
@@ -96,7 +96,7 @@ const Profile = () => {
 
             {/* Full Name Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Full Name
               </label>
               <input
@@ -104,22 +104,22 @@ const Profile = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter your full name"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all duration-200"
               />
             </div>
 
             {/* Email Display (Read-only) */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
                 Email Address
               </label>
               <input
                 type="email"
                 value={user?.email || ""}
                 disabled
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-100 text-gray-600 cursor-not-allowed"
+                className="w-full px-4 py-3 border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-lg cursor-not-allowed"
               />
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
                 Email cannot be changed
               </p>
             </div>
@@ -129,7 +129,7 @@ const Profile = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition font-semibold flex items-center justify-center gap-2 ${
+                className={`w-full bg-violet-600 hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-600 text-white py-3 px-4 rounded-lg transition font-semibold flex items-center justify-center gap-2 shadow-sm ${
                   isLoading ? "opacity-60 cursor-not-allowed" : ""
                 }`}
               >

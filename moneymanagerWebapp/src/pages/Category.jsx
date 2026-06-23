@@ -139,7 +139,7 @@ const Category = () => {
           <h2 className="text-2xl font-semibold">All Categories</h2>
           <button
             onClick={() => setOpenAddCategoryModal(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-lg hover:bg-green-100 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-green-50 dark:bg-green-950/30 text-green-600 dark:text-green-400 rounded-lg hover:bg-green-100 dark:hover:bg-green-950/50 transition-transform duration-150 hover:scale-110 active:scale-95 font-semibold"
           >
             <Plus size={15} />
             Add Category

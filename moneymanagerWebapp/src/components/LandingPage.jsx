@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowRight, Wallet, TrendingUp, PieChart, Shield, BarChart3, Check, LayoutDashboard, List, Coins } from "lucide-react";
 // Import your custom images
@@ -6,32 +7,51 @@ import profilePhoto from "../assets/photo.png";
 
 const LandingPage = () => {
   const navigate = useNavigate();
+  const containerRef = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        setIsScrolled(containerRef.current.scrollTop > 10);
+      }
+    };
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
-    <div className="landing-page-wrapper">
+    <div ref={containerRef} className="landing-page-wrapper">
       <div className="min-h-screen bg-gray-50">
         {/* Navigation */}
-        <nav className="bg-white shadow-sm sticky top-0 z-50">
+        <nav className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-md border-b border-slate-200/50" : "bg-white shadow-sm"}`}>
           <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+            <div className="flex items-center gap-3 cursor-pointer transition-transform duration-150 hover:scale-105 active:scale-95" onClick={() => navigate("/")}>
               {/* Using logo.png instead of emoji */}
               <img src={logo} alt="Money Manager Logo" className="w-10 h-10 object-contain" />
               {/* Changed text color to black */}
-              <span className="text-xl font-bold text-black">Money Manager</span>
+              <span className="text-xl font-bold text-black">Money Tracker</span>
             </div>
             <div className="hidden md:flex items-center gap-6">
-              <button onClick={() => navigate("/")} className="text-gray-700 hover:text-purple-600 font-medium transition">
+              <button onClick={() => navigate("/")} className="text-gray-700 hover:text-purple-600 font-medium transition transition-transform duration-150 hover:scale-105 active:scale-95">
                 Home
               </button>
-              <button onClick={() => navigate("/about")} className="text-gray-700 hover:text-purple-600 font-medium transition">
+              <button onClick={() => navigate("/about")} className="text-gray-700 hover:text-purple-600 font-medium transition transition-transform duration-150 hover:scale-105 active:scale-95">
                 About us
               </button>
-              <button onClick={() => navigate("/login")} className="text-gray-700 hover:text-purple-600 font-medium px-4 py-2 transition">
+              <button onClick={() => navigate("/login")} className="text-gray-700 hover:text-purple-600 font-medium px-4 py-2 transition transition-transform duration-150 hover:scale-105 active:scale-95">
                 Login
               </button>
               <button 
                 onClick={() => navigate("/signup")} 
-                className="bg-purple-600 text-white px-6 py-2.5 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md"
+                className="bg-purple-600 text-white px-6 py-2.5 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md transition-transform duration-150 hover:scale-105 active:scale-95"
               >
                 Get Started
               </button>
@@ -52,13 +72,13 @@ const LandingPage = () => {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
                 onClick={() => navigate("/signup")}
-                className="bg-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-purple-700 transition shadow-lg text-lg"
+                className="bg-purple-600 text-white px-8 py-4 rounded-xl font-semibold hover:bg-purple-700 transition shadow-lg text-lg transition-transform duration-150 hover:scale-105 active:scale-95"
               >
                 Start Tracking for Free
               </button>
               <button 
                 onClick={() => navigate("/about")}
-                className="bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition flex items-center justify-center gap-2 border-2 border-gray-200 text-lg"
+                className="bg-white text-gray-700 px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition flex items-center justify-center gap-2 border-2 border-gray-200 text-lg transition-transform duration-150 hover:scale-105 active:scale-95"
               >
                 Learn More <ArrowRight size={20} />
               </button>
@@ -74,7 +94,7 @@ const LandingPage = () => {
                   {/* Using logo.png instead of emoji */}
                   <img src={logo} alt="Money Manager Logo" className="w-10 h-10 object-contain" />
                   {/* Changed text color to black */}
-                  <span className="font-bold text-black">Money Manager</span>
+                  <span className="font-bold text-black">Money Tracker</span>
                 </div>
                 <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center shadow-md">
                   <span className="text-white text-sm font-bold">N</span>
@@ -266,7 +286,7 @@ const LandingPage = () => {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                  Why Choose Money Manager?
+                  Why Choose Money Tracker?
                 </h2>
                 <p className="text-lg text-gray-600 mb-8">
                   Get complete control over your finances with our comprehensive suite of tools designed for modern financial management.
@@ -358,7 +378,7 @@ const LandingPage = () => {
             </p>
             <button 
               onClick={() => navigate("/signup")}
-              className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold hover:shadow-2xl transform hover:scale-105 transition text-lg"
+              className="bg-white text-purple-600 px-10 py-4 rounded-xl font-bold hover:shadow-2xl transform hover:scale-105 active:scale-95 transition-all duration-150 text-lg"
             >
               Get Started Free Today
             </button>
@@ -372,7 +392,7 @@ const LandingPage = () => {
               <div className="flex items-center gap-3">
                 {/* Using logo.png in footer */}
                 <img src={logo} alt="Money Manager Logo" className="w-10 h-10 object-contain" />
-                <span className="text-xl font-bold">Money Manager</span>
+                <span className="text-xl font-bold">Money Tracker</span>
               </div>
               <div className="flex gap-8">
                 <button onClick={() => navigate("/about")} className="text-gray-400 hover:text-white transition">About</button>
@@ -380,7 +400,7 @@ const LandingPage = () => {
               </div>
             </div>
             <div className="border-t border-gray-800 pt-8 text-center">
-              <p className="text-gray-400">© 2025 Money Manager. All rights reserved.</p>
+              <p className="text-gray-400">© 2025 Money Tracker. All rights reserved.</p>
             </div>
           </div>
         </footer>

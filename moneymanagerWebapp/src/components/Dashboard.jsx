@@ -7,7 +7,7 @@ const Dashboard = ({ children, activeMenu }) => {
   const { user } = useContext(AppContext);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-50 transition-colors duration-200">
       <Menubar activeMenu={activeMenu} />
       {user && (
         <div className="flex flex-1 overflow-hidden">

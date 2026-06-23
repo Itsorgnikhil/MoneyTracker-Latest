@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<CategoryEntity, Long> {
+public interface  CategoryRepository extends JpaRepository<CategoryEntity, Long> {
 
     // SELECT * FROM tbl_categories WHERE profile_id = ?
     List<CategoryEntity> findByProfileId(Long profileId);

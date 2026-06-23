@@ -15,7 +15,7 @@
 
     return (
         <div>
-        <p className="text-sm">{content}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-300">{content}</p>
         <div className="flex justify-end mt-6 space-x-4">
            
 

@@ -1,8 +1,86 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 @import "tailwindcss";
 
+/* 🔥 REQUIRED FOR DARK MODE IN TAILWIND v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   font-family: 'Outfit', sans-serif;
-  background-color: #fafafa;
-  overflow: hidden; 
+  overflow: hidden;
+}
+
+/* Loader Overlay Transitions */
+.loader-backdrop {
+  opacity: 0;
+  transition: opacity 0.2s ease-in-out;
+  background-color: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(1px);
+}
+.loader-backdrop.show {
+  opacity: 1;
+}
+
+/* Keyframe animations respecting reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes scaleIn {
+    from {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes blob1 {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -50px) scale(1.1); }
+      66% { transform: translate(-20px, 20px) scale(0.95); }
+    }
+    @keyframes blob2 {
+      0%, 100% { transform: translate(0, 0) scale(1.05); }
+      50% { transform: translate(-40px, 30px) scale(0.9); }
+    }
+    @keyframes blob3 {
+      0%, 100% { transform: translate(0, 0) scale(0.9); }
+      50% { transform: translate(50px, -20px) scale(1.1); }
+    }
+  }
+}
+
+.success-overlay-backdrop {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.success-overlay-card {
+  animation: scaleIn 200ms ease-out forwards;
+}
+
+/* Floating Blob Animation Helpers */
+.animate-blob-1 {
+  animation: blob1 15s infinite alternate ease-in-out;
+}
+.animate-blob-2 {
+  animation: blob2 18s infinite alternate ease-in-out;
+}
+.animate-blob-3 {
+  animation: blob3 12s infinite alternate ease-in-out;
 }

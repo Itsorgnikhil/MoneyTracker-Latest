@@ -7,56 +7,21 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-
-const CustomTooltip = ({ active, payload }) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div
-        style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
-          boxShadow: "0px 2px 8px rgba(0,0,0,0.1)",
-          padding: "12px",
-          border: "1px solid #f3f4f6",
-          minWidth: "180px",
-        }}
-      >
-        <p style={{ fontSize: "14px", fontWeight: "600", color: "#dc2626", marginBottom: "8px" }}>
-          {data.month}
-        </p>
-        <p style={{ fontSize: "14px", fontWeight: "700", color: "#1f2937", marginBottom: "4px" }}>
-          Total: ₹{data.expense?.toLocaleString()}
-        </p>
-        
-        {data.name && (
-          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "4px" }}>
-            {data.name}
-          </p>
-        )}
-        
-        {data.category && (
-          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px" }}>
-            Category: {data.category}
-          </p>
-        )}
-        
-        {data.description && (
-          <p style={{ fontSize: "12px", color: "#6b7280", marginTop: "2px", fontStyle: "italic" }}>
-            {data.description}
-          </p>
-        )}
-      </div>
-    );
-  }
-  return null;
-};
+import { useTheme } from "../context/ThemeContext.jsx";
+import { TrendingDown } from "lucide-react";
 
 const CustomExpenseChart = ({ data }) => {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   if (!data || data.length === 0) {
     return (
-      <div className="w-full h-64 flex items-center justify-center">
-        <p className="text-sm text-gray-400">No expense data available</p>
+      <div className="w-full h-80 flex flex-col items-center justify-center border border-dashed border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50/50 dark:bg-slate-800/20 py-8 px-4 transition-colors duration-200">
+        <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-950/20 flex items-center justify-center text-red-500 dark:text-red-400 mb-3">
+          <TrendingDown size={24} />
+        </div>
+        <p className="text-sm font-medium text-slate-700 dark:text-slate-300">No expense data available</p>
+        <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Start adding expenses to visualize trends</p>
       </div>
     );
   }
@@ -73,9 +38,49 @@ const CustomExpenseChart = ({ data }) => {
   const yMin = Math.max(0, Math.floor((minExpense - padding) / 5000) * 5000);
   const yMax = Math.ceil((maxExpense + padding) / 5000) * 5000;
 
+  const gridStroke = isDark ? "#334155" : "#e5e7eb";
+  const axisTickColor = isDark ? "#94a3b8" : "#9ca3af";
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const toolData = payload[0].payload;
+      return (
+        <div
+          className="bg-white dark:bg-slate-800 p-3 rounded-lg shadow-lg border border-slate-100 dark:border-slate-700 min-w-[180px] transition-colors duration-200"
+        >
+          <p className="text-sm font-semibold text-red-600 dark:text-red-400 mb-2">
+            {toolData.month}
+          </p>
+          <p className="text-sm font-bold text-slate-800 dark:text-slate-100 mb-1">
+            Total: ₹{toolData.expense?.toLocaleString()}
+          </p>
+          
+          {toolData.name && (
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">
+              {toolData.name}
+            </p>
+          )}
+          
+          {toolData.category && (
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
+              Category: {toolData.category}
+            </p>
+          )}
+          
+          {toolData.description && (
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 italic truncate">
+              {toolData.description}
+            </p>
+          )}
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="w-full h-80" style={{ outline: 'none' }} tabIndex={-1}>
-      <ResponsiveContainer width="100%" height="100%">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <AreaChart 
           data={data} 
           margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
@@ -88,7 +93,7 @@ const CustomExpenseChart = ({ data }) => {
           </defs>
           <CartesianGrid 
             strokeDasharray="3 3" 
-            stroke="#e5e7eb" 
+            stroke={gridStroke} 
             vertical={false}
             horizontal={false}
           />
@@ -96,7 +101,7 @@ const CustomExpenseChart = ({ data }) => {
             dataKey="month"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#9ca3af", fontSize: 12 }}
+            tick={{ fill: axisTickColor, fontSize: 12 }}
             dy={30}
             height={60}
           />
@@ -104,23 +109,23 @@ const CustomExpenseChart = ({ data }) => {
             domain={[yMin, yMax]}
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#9ca3af", fontSize: 12 }}
+            tick={{ fill: axisTickColor, fontSize: 12 }}
             tickFormatter={(value) => `${(value / 1000).toFixed(0)}k`}
             dx={-30}
             width={60}
           />
           <Tooltip 
             content={<CustomTooltip />} 
-            cursor={{ stroke: "#dc2626", strokeWidth: 1, strokeDasharray: "3 3" }} 
+            cursor={{ stroke: isDark ? "#ef4444" : "#dc2626", strokeWidth: 1, strokeDasharray: "3 3" }} 
           />
           <Area
             type="monotone"
             dataKey="expense"
-            stroke="#dc2626"
+            stroke="#ef4444"
             strokeWidth={3}
             fill="url(#colorExpense)"
-            dot={{ r: 5, fill: "#dc2626", strokeWidth: 0 }}
-            activeDot={{ r: 7, fill: "#dc2626", strokeWidth: 0 }}
+            dot={{ r: 5, fill: "#ef4444", strokeWidth: 0 }}
+            activeDot={{ r: 7, fill: "#ef4444", strokeWidth: 0 }}
           />
         </AreaChart>
       </ResponsiveContainer>

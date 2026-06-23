@@ -11,10 +11,10 @@ const TransactionInfoCard = ({
 }) => {
   const getAmountStyles = () =>
     type === "income"
-      ? "bg-green-50 text-green-800"
-      : "bg-red-50 text-red-800";
+      ? "bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400"
+      : "bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400";
 
-  const getIconBgStyles = () => "bg-white";
+  const getIconBgStyles = () => "bg-slate-100 dark:bg-slate-700";
 
   const addThousandsSeparator = (num) => {
     if (num == null || isNaN(num)) return '';
@@ -25,8 +25,8 @@ const TransactionInfoCard = ({
   const isUrl = icon && (icon.startsWith('http') || icon.startsWith('data:'));
 
   return (
-    <div className="group relative flex items-center gap-4 mt-2 p-3 rounded-lg hover:bg-gray-100/60">
-      <div className={`w-12 h-12 flex items-center justify-center ${getIconBgStyles()} rounded-full`}>
+    <div className="group relative flex items-center gap-4 mt-2 p-3 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/30 transition-colors duration-150">
+      <div className={`w-12 h-12 flex items-center justify-center ${getIconBgStyles()} rounded-full transition-transform duration-150 hover:scale-110 active:scale-95`}>
         {icon ? (
           isUrl ? (
             <img src={icon} alt={title} className="w-8 h-8 object-contain" />
@@ -34,19 +34,19 @@ const TransactionInfoCard = ({
             <span className="text-3xl leading-none">{icon}</span>
           )
         ) : (
-          <UtensilsCrossed className="text-purple-800" size={24} />
+          <UtensilsCrossed className="text-violet-600 dark:text-violet-400" size={24} />
         )}
       </div>
       <div className="flex-1 flex items-center justify-between">
         <div>
-          <p className="text-sm text-gray-700 font-medium">{title}</p>
-          <p className="text-xs text-gray-400 mt-1">{date}</p>
+          <p className="text-sm text-slate-700 dark:text-slate-200 font-semibold">{title}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{date}</p>
         </div>
         <div className="flex items-center gap-2">
           {!hideDeleteBtn && (
             <button
               onClick={onDelete}
-              className="text-gray-400 hover:text-red-800 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+              className="text-gray-400 dark:text-gray-500 hover:text-red-800 dark:hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
             >
               <Trash2 size={18} />
             </button>

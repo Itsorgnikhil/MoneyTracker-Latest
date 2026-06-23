@@ -1,6 +1,6 @@
-//export const BASE_URL = "http://localhost:9090/api/v1.0";
+export const BASE_URL = "http://localhost:9090/api/v1.0";
 
-export const BASE_URL = "https://money-manager-api-42n5.onrender.com/api/v1.0"
+// export const BASE_URL = "https://money-manager-api-1hpd.onrender.com/api/v1.0"
 
 const CLOUDINARY_CLOUD_NAME = "dpp9xcj01";
 

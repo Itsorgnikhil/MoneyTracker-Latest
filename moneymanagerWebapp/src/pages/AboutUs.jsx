@@ -1,31 +1,60 @@
 import { useNavigate } from "react-router-dom";
-
+import logo from "../assets/logo.png";
+import React, { useState, useEffect, useRef } from "react";
 const AboutUs = () => {
   const navigate = useNavigate();
+  const containerRef = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (containerRef.current) {
+        setIsScrolled(containerRef.current.scrollTop > 10);
+      }
+    };
+    const container = containerRef.current;
+    if (container) {
+      container.addEventListener("scroll", handleScroll);
+    }
+    return () => {
+      if (container) {
+        container.removeEventListener("scroll", handleScroll);
+      }
+    };
+  }, []);
 
   return (
-    <div className="landing-page-wrapper">
+    <div ref={containerRef} className="landing-page-wrapper">
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-white">
         {/* Navigation */}
-        <nav className="flex items-center justify-between px-8 py-4 bg-white shadow-sm">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center text-2xl">
-              💰
-            </div>
-            <span className="text-xl font-bold text-gray-800">Money Manager</span>
-          </div>
-          <div className="flex items-center gap-8">
-            <button onClick={() => navigate("/")} className="text-gray-600 hover:text-gray-900">
-              Home
-            </button>
-            <button onClick={() => navigate("/about")} className="text-purple-600 font-semibold">
-              About us
-            </button>
-            <button onClick={() => navigate("/login")} className="text-gray-600 hover:text-gray-900 px-4 py-2">
-              Login
-            </button>
-          </div>
-        </nav>
+         <nav className={`sticky top-0 z-50 transition-all duration-300 ${isScrolled ? "bg-white/80 backdrop-blur-md shadow-md border-b border-slate-200/50" : "bg-white shadow-sm"}`}>
+                  <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+                      {/* Using logo.png instead of emoji */}
+                      <img src={logo} alt="Money Manager Logo" className="w-10 h-10 object-contain" />
+                      {/* Changed text color to black */}
+                      <span className="text-xl font-bold text-black">Money Manager</span>
+                    </div>
+                    <div className="hidden md:flex items-center gap-6">
+                      <button onClick={() => navigate("/")} className="text-gray-700 hover:text-purple-600 font-medium transition">
+                        Home
+                      </button>
+                      <button onClick={() => navigate("/about")} className="text-gray-700 hover:text-purple-600 font-medium transition">
+                        About us
+                      </button>
+                      <button onClick={() => navigate("/login")} className="text-gray-700 hover:text-purple-600 font-medium px-4 py-2 transition">
+                        Login
+                      </button>
+                      <button 
+                        onClick={() => navigate("/signup")} 
+                        className="bg-purple-600 text-white px-6 py-2.5 rounded-lg hover:bg-purple-700 transition font-semibold shadow-md"
+                      >
+                        Get Started
+                      </button>
+                    </div>
+                  </div>
+                </nav>
+        
 
         {/* Main Content */}
         <div className="max-w-4xl mx-auto px-8 py-20">

@@ -7,7 +7,7 @@ const Transactions = ({transactions, onMore, type, title}) => {
     <div className="card">
       <div className="flex items-center justify-between">
         <h5 className="text-lg">{title}</h5>
-        <button className="card-btn" onClick={onMore}>
+        <button className="card-btn transition-transform duration-150 hover:scale-110 active:scale-95" onClick={onMore}>
           More <ArrowRight className="text-base" size={15} />
         </button>
       </div>

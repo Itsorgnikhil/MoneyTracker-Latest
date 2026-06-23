@@ -3,6 +3,7 @@ import { Download, Mail } from "lucide-react";
 import moment from "moment";
 import TransactionInfoCard from "./TransactioninfoCard";
 import { LoaderCircle } from "lucide-react"; // make sure you have this component
+import { motion, AnimatePresence } from "framer-motion";
 
 const IncomeList = ({ transactions, onDelete, onDownload,onEmail }) => {
     const[loading,setLoading] = useState(false);
@@ -35,7 +36,7 @@ const IncomeList = ({ transactions, onDelete, onDownload,onEmail }) => {
                 <button
                     type="button"
                     disabled={loading} // separate state for email
-                    className="card-btn flex items-center gap-2"
+                    className="card-btn flex items-center gap-2 transition-transform duration-150 hover:scale-110 active:scale-95"
                     onClick={handleEmail}
                 >
                     {loading ? (
@@ -55,7 +56,7 @@ const IncomeList = ({ transactions, onDelete, onDownload,onEmail }) => {
                 <button
                     type="button"
                     disabled={loading} // separate state for download
-                    className="card-btn flex items-center gap-2"
+                    className="card-btn flex items-center gap-2 transition-transform duration-150 hover:scale-110 active:scale-95"
                     onClick={handleDownload}
                 >
                     {loading ? (
@@ -76,17 +77,27 @@ const IncomeList = ({ transactions, onDelete, onDownload,onEmail }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2">
                 {/*display the incomes*/}
-                {transactions?.map((income) => (
-                    <TransactionInfoCard
-                        key={income.id}
-                        title={income.name}
-                        icon={income.icon}
-                        date={moment(income.date).format("DD/MM/YYYY")}
-                        amount={income.amount}
-                        type="income"
-                        onDelete={() => onDelete(income.id)}
-                    />
-                ))}
+                <AnimatePresence initial={false}>
+                    {transactions?.map((income) => (
+                        <motion.div
+                            key={income.id}
+                            initial={{ opacity: 0, height: 0, x: -50 }}
+                            animate={{ opacity: 1, height: "auto", x: 0 }}
+                            exit={{ x: -100, opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            style={{ overflow: "hidden" }}
+                        >
+                            <TransactionInfoCard
+                                title={income.name}
+                                icon={income.icon}
+                                date={moment(income.date).format("DD/MM/YYYY")}
+                                amount={income.amount}
+                                type="income"
+                                onDelete={() => onDelete(income.id)}
+                            />
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </div>
         </div>
     );

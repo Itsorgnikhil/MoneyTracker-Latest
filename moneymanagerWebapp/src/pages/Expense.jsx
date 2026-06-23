@@ -9,12 +9,15 @@ import { toast } from "react-hot-toast";
 import AddExpenseForm from "../components/AddExpenseForm.jsx";
 import DeleteAlert from "../components/DeleteAlert.jsx";
 import ExpenseOverview from "../components/ExpenseOverview.jsx";
+import Loader from "../components/common/Loader";
+import SuccessOverlay from "../components/common/SuccessOverlay";
 
 const Expense = () => {
   useUser();
   const [expenseData, setExpenseData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [openAddExpenseModal, setOpenAddExpenseModal] = useState(false);
   const [openDeleteAlert, setOpenDeleteAlert] = useState({
     show: false,
@@ -99,10 +102,13 @@ const Expense = () => {
       });
 
       if (response.status === 201 || response.status === 200) {
-        setOpenAddExpenseModal(false);
-        toast.success("Expense added successfully");
-        fetchExpenseDetails();
-        fetchExpenseCategories();
+        setShowSuccess(true);
+        setTimeout(() => {
+          setOpenAddExpenseModal(false);
+          setShowSuccess(false);
+          fetchExpenseDetails();
+          fetchExpenseCategories();
+        }, 1500);
       }
     } catch (error) {
       console.error("Error adding expense:", error);
@@ -172,6 +178,7 @@ const Expense = () => {
 
   return (
     <Dashboard activeMenu="Expense">
+      {loading && <Loader overlay={true} />}
       <div className="h-full overflow-y-auto">
         <div className="py-5 space-y-6">
           <div className="grid grid-cols-1 gap-6">
@@ -218,6 +225,7 @@ const Expense = () => {
           </div>
         </div>
       </div>
+      <SuccessOverlay visible={showSuccess} />
     </Dashboard>
   );
 };

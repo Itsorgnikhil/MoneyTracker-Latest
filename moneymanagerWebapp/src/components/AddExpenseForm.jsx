@@ -41,7 +41,7 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
 
       {/* Expense Name Input */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
           Expense Name
         </label>
         <input
@@ -49,19 +49,19 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
           value={expense.name}
           onChange={({ target }) => handleChange("name", target.value)}
           placeholder="Expense Name (e.g., Groceries, Rent, Utilities)"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 placeholder:text-gray-400"
+          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
         />
       </div>
 
       {/* Category Dropdown */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
           Category
         </label>
         <select
           value={expense.categoryId}
           onChange={({ target }) => handleChange("categoryId", target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 text-gray-700 bg-white appearance-none cursor-pointer"
+          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 appearance-none cursor-pointer"
           style={{
             backgroundImage:
               'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'12\' height=\'12\' viewBox=\'0 0 12 12\'%3E%3Cpath fill=\'%236B7280\' d=\'M6 9L1 4h10z\'/%3E%3C/svg%3E")',
@@ -70,9 +70,9 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
             paddingRight: "2.5rem",
           }}
         >
-          <option value="">Select Category</option>
+          <option value="" className="bg-white dark:bg-slate-900">Select Category</option>
           {categoryOptions.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.value} value={option.value} className="bg-white dark:bg-slate-900">
               {option.label}
             </option>
           ))}
@@ -81,7 +81,7 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
 
       {/* Amount */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
           Amount
         </label>
         <input
@@ -89,20 +89,20 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
           value={expense.amount}
           onChange={({ target }) => handleChange("amount", target.value)}
           placeholder="e.g., 500.00"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 placeholder:text-gray-400"
+          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
         />
       </div>
 
       {/* Date Picker */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2">
           Date
         </label>
         <input
           type="date"
           value={expense.date}
           onChange={({ target }) => handleChange("date", target.value)}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 text-gray-700 bg-white placeholder:text-gray-400"
+          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-750 dark:text-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200 placeholder:text-slate-400 dark:placeholder:text-slate-500"
         />
       </div>
 
@@ -112,7 +112,7 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
           <button
             type="button"
             onClick={onClose}
-            className="px-6 py-3 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 mr-3"
+            className="px-6 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg mr-3 transition-colors duration-200"
           >
             Cancel
           </button>
@@ -122,8 +122,8 @@ const AddExpenseForm = ({ onAddExpense, categories = [], onClose }) => {
           type="button"
           onClick={handleAddExpense}
           disabled={loading}
-          className={`px-6 py-3 rounded-lg text-white ${
-            loading ? "bg-red-400 cursor-not-allowed" : "bg-red-600 hover:bg-red-700"
+          className={`px-6 py-3 rounded-lg text-white font-semibold transition ${
+            loading ? "bg-red-400 dark:bg-red-800 cursor-not-allowed" : "bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600"
           }`}
         >
           {loading ? (

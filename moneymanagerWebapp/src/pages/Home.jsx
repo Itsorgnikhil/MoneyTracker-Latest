@@ -11,14 +11,18 @@ import axiosConfig from "../util/axiosConfig";
 import RecentTransactions from "../components/RecentTranscations.jsx";
 import FinanceOverview from "../components/FinanceOverview.jsx";
 import Transactions from "../components/Transactions.jsx";
-
-
+import Loader from "../components/common/Loader";
+import { useCountUp } from "../hooks/useCountUp.jsx";
 
 const Home = () => {
   const user = useUser();
   const navigate = useNavigate();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  const totalBalanceCount = useCountUp(dashboardData?.totalBalance || 0, 800);
+  const totalIncomeCount = useCountUp(dashboardData?.totalIncome || 0, 800);
+  const totalExpenseCount = useCountUp(dashboardData?.totalExpense || 0, 800);
 
   const fetchDashboardData = async ()=> {
     if (loading) return;
@@ -43,28 +47,32 @@ const Home = () => {
 
   return (
     <div>
+      {loading && <Loader overlay={true} />}
       <Dashboard activeMenu="Dashboard">
         <div className="my-5 mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <InfoCard
               icon={<WalletCards />}
               label="Total Balance"
-              value={addThousandsSeparator(dashboardData?.totalBalance  || 0)}
+              value={addThousandsSeparator(totalBalanceCount)}
               color="bg-purple-800"
+              className="transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30 cursor-pointer active:scale-[0.98]"
             />
 
             <InfoCard
               icon={<Wallet/>}
               label="Total Income"
-              value={addThousandsSeparator(dashboardData?.totalIncome  || 0)}
+              value={addThousandsSeparator(totalIncomeCount)}
               color="bg-green-800"
+              className="transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30 cursor-pointer active:scale-[0.98]"
             />
 
             <InfoCard
               icon={<Coins/>}
               label="Total Expense"
-              value={addThousandsSeparator(dashboardData?.totalExpense  || 0)}
+              value={addThousandsSeparator(totalExpenseCount)}
               color="bg-red-800"
+              className="transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-xl hover:shadow-black/10 dark:hover:shadow-black/30 cursor-pointer active:scale-[0.98]"
             />
           </div>
 
